@@ -1,7 +1,7 @@
 'use client';
 
 import Logo from '@/components/shared/logo';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -13,7 +13,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { signOut, useSession } from '@/lib/auth/client';
 import Link from 'next/link';
+import { useState } from 'react';
+import { toast } from 'sonner';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { ThemeToggle } from './theme-toggle';
 
 // Navigation links array to be used in both desktop and mobile menus
@@ -25,6 +29,9 @@ const navigationLinks = [
 ];
 
 export default function Navbar() {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { data } = useSession();
+
   return (
     <header className='border-b px-4 md:px-6 sticky top-0 z-40 bg-background/95 backdrop-blur-sm'>
       <div className='flex h-16 justify-between gap-4'>
@@ -104,12 +111,80 @@ export default function Navbar() {
         {/* Right side */}
         <div className='flex items-center gap-2'>
           <ThemeToggle />
-          <Button asChild variant='ghost' size='sm' className='text-sm'>
-            <Link href='#'>Sign In</Link>
-          </Button>
-          <Button asChild size='sm' className='text-sm'>
-            <Link href='#'>Get Started</Link>
-          </Button>
+          {data ? (
+            <Popover open={isOpen} onOpenChange={setIsOpen}>
+              <PopoverTrigger asChild>
+                <div className='relative'>
+                  <Avatar>
+                    <AvatarImage
+                      src={data.user.image || 'https://github.com/shadcn.png'}
+                      alt={data.user.name}
+                    />
+                    <AvatarFallback>
+                      {data.user.email?.charAt(0).toUpperCase() || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className='absolute -end-0.5 -bottom-0.5 size-3 rounded-full border-2 border-background bg-emerald-500'>
+                    <span className='sr-only'>Online</span>
+                  </span>
+                </div>
+              </PopoverTrigger>
+
+              <PopoverContent
+                className={
+                  'w-[200px] space-y-2 p-2 ring-1 ring-background/10 shadow-lg'
+                }
+                align='end'
+                alignOffset={10}
+                arrowPadding={5}>
+                <Link
+                  href={'#'}
+                  onClick={() => setIsOpen(false)}
+                  className={buttonVariants({
+                    variant: 'ghost',
+                    className: 'w-full justify-start bg-accent/50',
+                  })}>
+                  Profile
+                </Link>
+                <Link
+                  href={'#'}
+                  onClick={() => setIsOpen(false)}
+                  className={buttonVariants({
+                    variant: 'ghost',
+                    className: 'w-full justify-start bg-accent/50',
+                  })}>
+                  Settings
+                </Link>
+                <Link
+                  href={'#'}
+                  onClick={() => {
+                    signOut({
+                      fetchOptions: {
+                        onSuccess: () => {
+                          toast.success('Logged out successfully');
+                        },
+                      },
+                    });
+                    setIsOpen(false);
+                  }}
+                  className={buttonVariants({
+                    variant: 'destructive',
+                    className: 'w-full justify-start bg-accent/50',
+                  })}>
+                  Logout
+                </Link>
+              </PopoverContent>
+            </Popover>
+          ) : (
+            <>
+              <Button asChild variant='ghost' size='sm' className='text-sm'>
+                <Link href='/login'>Sign In</Link>
+              </Button>
+              <Button asChild size='sm' className='text-sm'>
+                <Link href='/signup'>Get Started</Link>
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </header>
