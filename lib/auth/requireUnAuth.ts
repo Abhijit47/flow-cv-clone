@@ -2,9 +2,10 @@
 
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { cache } from 'react';
 import { auth } from './server';
 
-export async function requireUnAuth() {
+export const requireUnAuth = cache(async () => {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -12,4 +13,4 @@ export async function requireUnAuth() {
   if (session) {
     redirect('/');
   }
-}
+});

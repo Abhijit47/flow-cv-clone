@@ -19,12 +19,19 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from '@/components/ui/input-group';
 import { Spinner } from '@/components/ui/spinner';
 import { signUp } from '@/lib/auth/client';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import z from 'zod';
@@ -44,6 +51,10 @@ const signUpFormSchema = z
 type SignUpFormValues = z.infer<typeof signUpFormSchema>;
 
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
+  const [isVisible, setIsVisible] = useState<boolean>(false);
+
+  const toggleVisibility = () => setIsVisible((prevState) => !prevState);
+
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
@@ -119,11 +130,14 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                         {...field}
                       />
                     </FormControl>
-                    <FormDescription className={'text-xs'}>
-                      We&apos;ll use this to contact you. We will not share your
-                      email with anyone else.
-                    </FormDescription>
-                    <FormMessage />
+                    {!form.formState.errors.email?.message ? (
+                      <FormDescription className={'text-xs'}>
+                        We&apos;ll use this to contact you. We will not share
+                        your email with anyone else.
+                      </FormDescription>
+                    ) : (
+                      <FormMessage />
+                    )}
                   </FormItem>
                 )}
               />
@@ -134,12 +148,39 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input placeholder='******' type='password' {...field} />
+                      <InputGroup>
+                        <InputGroupInput
+                          aria-invalid={!!form.formState.errors.password}
+                          id={field.name}
+                          placeholder='******'
+                          type={isVisible ? 'text' : 'password'}
+                          {...field}
+                        />
+                        <InputGroupAddon align='inline-end'>
+                          <InputGroupButton
+                            type='button'
+                            onClick={toggleVisibility}
+                            aria-label={
+                              isVisible ? 'Hide password' : 'Show password'
+                            }
+                            aria-pressed={isVisible}
+                            aria-controls='password'>
+                            {isVisible ? (
+                              <EyeOffIcon size={16} aria-hidden='true' />
+                            ) : (
+                              <EyeIcon size={16} aria-hidden='true' />
+                            )}
+                          </InputGroupButton>
+                        </InputGroupAddon>
+                      </InputGroup>
                     </FormControl>
-                    <FormDescription className={'text-xs'}>
-                      Must be at least 8 characters long.
-                    </FormDescription>
-                    <FormMessage />
+                    {!form.formState.errors.password?.message ? (
+                      <FormDescription className={'text-xs'}>
+                        Must be at least 8 characters long.
+                      </FormDescription>
+                    ) : (
+                      <FormMessage />
+                    )}
                   </FormItem>
                 )}
               />
@@ -150,12 +191,39 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                   <FormItem>
                     <FormLabel>Confirm Password</FormLabel>
                     <FormControl>
-                      <Input placeholder='******' type='password' {...field} />
+                      <InputGroup>
+                        <InputGroupInput
+                          aria-invalid={!!form.formState.errors.password}
+                          id={field.name}
+                          placeholder='******'
+                          type={isVisible ? 'text' : 'password'}
+                          {...field}
+                        />
+                        <InputGroupAddon align='inline-end'>
+                          <InputGroupButton
+                            type='button'
+                            onClick={toggleVisibility}
+                            aria-label={
+                              isVisible ? 'Hide password' : 'Show password'
+                            }
+                            aria-pressed={isVisible}
+                            aria-controls='password'>
+                            {isVisible ? (
+                              <EyeOffIcon size={16} aria-hidden='true' />
+                            ) : (
+                              <EyeIcon size={16} aria-hidden='true' />
+                            )}
+                          </InputGroupButton>
+                        </InputGroupAddon>
+                      </InputGroup>
                     </FormControl>
-                    <FormDescription className={'text-xs'}>
-                      Please confirm your password.
-                    </FormDescription>
-                    <FormMessage />
+                    {!form.formState.errors.confirmPassword?.message ? (
+                      <FormDescription className={'text-xs'}>
+                        Please confirm your password.
+                      </FormDescription>
+                    ) : (
+                      <FormMessage />
+                    )}
                   </FormItem>
                 )}
               />
