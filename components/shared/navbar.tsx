@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/popover';
 import { signOut, useSession } from '@/lib/auth/client';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
@@ -31,6 +32,7 @@ const navigationLinks = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { data } = useSession();
+  const router = useRouter();
 
   return (
     <header className='border-b px-4 md:px-6 sticky top-0 z-40 bg-background/95 backdrop-blur-sm'>
@@ -162,6 +164,7 @@ export default function Navbar() {
                       fetchOptions: {
                         onSuccess: () => {
                           toast.success('Logged out successfully');
+                          router.push('/login');
                         },
                       },
                     });
