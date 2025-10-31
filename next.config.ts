@@ -32,6 +32,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'assets.flowcvassets.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
   // devIndicators: {
