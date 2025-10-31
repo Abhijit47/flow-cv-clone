@@ -1,15 +1,15 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  async redirects() {
-    return [
-      {
-        source: '/',
-        destination: '/resumes',
-        permanent: false,
-      },
-    ];
-  },
+  // async redirects() {
+  //   return [
+  //     {
+  //       source: '/',
+  //       destination: '/resumes',
+  //       permanent: false,
+  //     },
+  //   ];
+  // },
   /* config options here */
   cacheComponents: true,
   reactCompiler: true,
@@ -34,6 +34,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // devIndicators: {
+  //   position: 'bottom-right',
+  // },
 };
 
 export default nextConfig;
