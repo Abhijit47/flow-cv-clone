@@ -11,9 +11,12 @@ import { IconCircleDashedPlus } from '@tabler/icons-react';
 import { buttonVariants } from '@/components/ui/button';
 import ImportResumeDialog from '@/features/resumes/import-resume-dialog';
 import TemplateDialog from '@/features/resumes/template-dialog';
+import { requireAuth } from '@/lib/auth/requireAuth';
 import Link from 'next/link';
 
-export default function ResumesPage() {
+export default async function ResumesPage() {
+  await requireAuth();
+
   return (
     <div className='flex flex-1 flex-col'>
       <div className='@container/main flex flex-1 flex-col gap-2'>

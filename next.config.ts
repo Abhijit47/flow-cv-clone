@@ -12,11 +12,14 @@ const nextConfig: NextConfig = {
   // },
   /* config options here */
   cacheComponents: true,
-  reactCompiler: true,
+  reactCompiler: {
+    compilationMode: 'annotation',
+  },
   typedRoutes: true,
   experimental: {
     typedEnv: true,
   },
+  serverExternalPackages: ['@react-pdf/renderer'],
   logging: {
     fetches: {
       fullUrl: true,
